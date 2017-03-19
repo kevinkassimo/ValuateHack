@@ -120,7 +120,8 @@ var steps = [
 			return domain_submit_button[0].getBoundingClientRect();
 		}, config);
 		
-	}, function parse_result() {
+	}, 
+	function parse_result() {
 		var data = page.evaluate(function() {
 			var entries = [];
 			
@@ -147,7 +148,7 @@ var steps = [
 		//fs.write("sample.html", page.content, "w");
 		
 		//Clear old report
-		fs.write("report.txt", "", "w");
+		fs.remove("report.txt");
 		
 		//PriceOnly case
 		if (config.priceonly !== undefined && Number(config.priceonly) > 0) {

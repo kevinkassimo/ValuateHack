@@ -1,7 +1,7 @@
 # ValuateHack
 ### A tool to remove non-customer price search daily limit 
 
-A very simple hack on a domain price evaluation site. Using PhantomJS.  
+A very simple hack on a domain price evaluation site Valuate.com (which internally using domain price evaluation algorithms by Estibot.com). Using PhantomJS.  
 
 ### How to use  
 Rename "sample_config.json" to __"config.json"__.  
