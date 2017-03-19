@@ -1,0 +1,14 @@
+Abc.com	$1,940,000
+Amazing.com	$306,000
+123.com	$279,000
+Long.com	$148,000
+VeryGood.com	$48,000
+ManyMore.com	$2,800
+Setflag.com	$450
+Abc.com	$1,940,000 Freq:100,000,000 Searches:1,875,000 Traffic:- Comp:high CPC:$1.59 Available:All Taken
+Amazing.com	$306,000 Freq:100,000,000 Searches:373,240 Traffic:- Comp:high CPC:$0.79 Available:All Taken
+123.com	$279,000 Freq:100,000,000 Searches:50,625 Traffic:- Comp:high CPC:$2.58 Available:All Taken
+Long.com	$148,000 Freq:100,000,000 Searches:113,125 Traffic:- Comp:high CPC:$1.4 Available:All Taken
+VeryGood.com	$48,000 Freq:100,000,000 Searches:33,875 Traffic:- Comp:medium CPC:$1.1 Available:All Taken
+ManyMore.com	$2,800 Freq:100,000,000 Searches:737 Traffic:- Comp:medium CPC:$0.88 Available:All Taken
+Setflag.com	$450 Freq:279,000 Searches:113 Traffic:- Comp:low CPC:$0.05 Available:All Available

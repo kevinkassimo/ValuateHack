@@ -1,1 +1,16 @@
-A very simple hack on a domain price evaluation site. Using PhantomJS.
+# ValuateHack
+### A tool to remove non-customer price search daily limit 
+
+A very simple hack on a domain price evaluation site. Using PhantomJS.  
+
+### How to use  
+Rename "sample_config.json" to __"config.json"__.  
+Enter your username (email) and password at the correct place.  
+Enter all the domains you want to check inside the [] (brackets) after "domain", e.g.  
+```
+"domain": ["domain1.com", "domain2.com", "domain3.com"]
+```
+"timeout" specifies polling time. If you are having a large number of domains to query, increase the number of "timeout". (The program has a chance to fail if "timeout" is too small, but bigger timeout means longer time to wait before generating data)  
+"priceonly": set it to 0 if you only want domain \+ price to be listed in the final result.  
+
+Generated report will be in "report.txt".

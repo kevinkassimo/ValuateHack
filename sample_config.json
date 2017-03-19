@@ -1,0 +1,7 @@
+{
+	"timeout": 3000,
+	"priceonly": 0,
+	"username": "YOUR USERNAME/EMAIL GOES HERE",
+	"password": "YOUR PASSWORD GOES HERE",
+	"domains": ["SAMPLEDOMAIN.com", "EXAMPLE.com"]
+}

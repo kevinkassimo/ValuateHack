@@ -41,14 +41,12 @@ var steps = [
 	function login() {
 		page.evaluate(function eval_func1(config) {
 			var domain_form = $(document.forms[0]);
-			console.log(config);
 			domain_form.find('input[name="Login"]').val(config.username);
 			domain_form.find('input[name="Password"]').val(config.password);		
 			// Click the button
 			domain_form.find('input[type="submit"]').click();
-			return domain_form.find('input[type="submit"]').get(0).getBoundingClientRect();
 		}, config);
-		console.log("Step 1 finished");
+		console.log("User logging in");
 	},
 	function wait_a_while() {
 		console.log("Loading for main page of " + page.url);
@@ -74,11 +72,11 @@ var steps = [
 			$('a[href="#domains"]').click();
 		});
 		
-		var _date = new Date();
-		var _userOffset = _date.getTimezoneOffset()*60*1000; // user's offset time
-		var _eastOffset = 3*60*60*1000; // 6 for central time - use whatever you need
-		_date = new Date(_date.getTime() - _userOffset + _eastOffset); // redefine variable
-		var date_cookie_string = "val%2D" + _date.getMonth() + "%2D" + _date.getDay() + "%2D" + _date.getFullYear();
+//		var _date = new Date();
+//		var _userOffset = _date.getTimezoneOffset()*60*1000; // user's offset time
+//		var _eastOffset = 3*60*60*1000; // 6 for central time - use whatever you need
+//		_date = new Date(_date.getTime() - _userOffset + _eastOffset); // redefine variable
+//		var date_cookie_string = "val%2D" + _date.getMonth() + "%2D" + _date.getDay() + "%2D" + _date.getFullYear();
 		
 		if (page.injectJs('jquery.cookie.js')) {
 			for (var i = 0; i < page.cookies.length; i++) {
@@ -99,7 +97,6 @@ var steps = [
 	},
 	function enter_list() {
 		var url = "https://www.valuate.com/";
-		console.log(page.cookies);
 		
 		if (page.url !== url) {
 			console.log("redoing...");
@@ -123,8 +120,65 @@ var steps = [
 			return domain_submit_button[0].getBoundingClientRect();
 		}, config);
 		
-	}, function result() {
-		fs.write("sample.html", page.content, "w");
+	}, function parse_result() {
+		var data = page.evaluate(function() {
+			var entries = [];
+			
+			var tr_s = $(document.forms[4]).find('tr');
+			
+			tr_s.each(function(index, element) {
+				if (index > 1 && index <= tr_s.length-3) {
+					var a_entry = []
+					$(element).find('td').each(function(i, e) {
+						if ($(e).children().length === 0) {
+							a_entry.push($(e).text());
+						} else {
+							a_entry.push($(e).find('font').text());
+						}
+					});
+					entries.push(a_entry);
+				}
+			}.bind(this));
+			return entries;
+		});
+		
+		////////////////
+		//For debugging
+		//fs.write("sample.html", page.content, "w");
+		
+		//Clear old report
+		fs.write("report.txt", "", "w");
+		
+		//PriceOnly case
+		if (config.priceonly !== undefined && Number(config.priceonly) > 0) {
+			for (var i = 0; i < data.length; i++) {
+				//Generating console print
+				var console_msg = "";
+				for (var j = 2; j < 4; j++) {
+					console_msg += data[i][j].trim() + " ";
+				}
+				console.log(console_msg);
+				
+				//Generating report
+				var report = data[i][2].trim() + "	" + data[i][3].trim() + "\n";
+				fs.write("report.txt", report, "a");
+			}
+			console.log("Report generated at report.txt");
+		}
+		
+		for (var i = 0; i < data.length; i++) {
+			//Generating console print
+			var console_msg = "";
+			for (var j = 2; j < data[i].length-2; j++) {
+				console_msg += data[i][j].trim() + " ";
+			}
+			console.log(console_msg);
+			
+			//Generating report
+			var report = data[i][2].trim() + "	" + data[i][3].trim() + " Freq:" + data[i][4] + " Searches:" + data[i][5] + " Traffic:" + data[i][6] + " Comp:" + data[i][7] + " CPC:"+ data[i][8] + " Available:" + data[i][9] + "\n";
+			fs.write("report.txt", report, "a");
+		}
+		console.log("Report generated at report.txt");
 	}
 ];
 
@@ -148,7 +202,8 @@ function handle_step() {
 		step_index++;
 	}
 	if (typeof steps[step_index] != "function") {
-		log_error("handle_step: current step not a function, program quits");
+		//log_error("handle_step: current step not a function, program quits");
+		console.log("WARNING: reaching list function end or error");
 	}
 }
 
@@ -172,7 +227,7 @@ function next_step() {
 function check_price() {
 	// set interval to 1s polling, may need to be longer.
 	clearCookies();
-	step(3000);
+	step(Number(config.timeout));
 };
 
 console.log("Script starts running without coding error");
