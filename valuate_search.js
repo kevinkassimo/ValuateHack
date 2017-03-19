@@ -91,15 +91,8 @@ var steps = [
 					}, page.cookies[i].name);
 					console.log(">>> Search Limit Cracked <<<");
 				}
-				console.log(page.cookies[i].name);
-				console.log(page.cookies[i].value);
 			}
 		}
-		for (var i = 0; i < page.cookies.length; i++) {
-			console.log(page.cookies[i].name);
-			console.log(page.cookies[i].value);
-		}
-		
 	},
 	function wait_a_while() {
 		console.log("Loading for main page of " + page.url);
@@ -129,36 +122,8 @@ var steps = [
 			domain_submit_button.click();
 			return domain_submit_button[0].getBoundingClientRect();
 		}, config);
-		//
-//		if (page.injectJs('tools/inject_valuate.js')) {
-//			var rect = page.evaluate(function eval_func4(config) {
-//				var domain_form = $('#content1').find('form');
-//				var domain_textarea = domain_form.find('textarea');
-//				var domain_submit_button = domain_form.find('input[type="submit"]');
-//				
-//				var domain_list_string = "";
-//				for (var i = 0; i < config.domains.length; i++) {
-//					domain_list_string += (config.domains[i] + "\n");
-//				}
-//				
-//				domain_textarea.val(domain_list_string);
-//				
-//				// The working click button
-//				domain_submit_button.click();
-//				return domain_submit_button[0].getBoundingClientRect();
-//			}, config);
-//			// click the submit button, actually this one should not work
-//			page.sendEvent('click', rect.left + rect.width / 2, rect.top + rect.height / 2);
-//		}
-		
-		console.log("Step 2 finished");
 		
 	}, function result() {
-//		for (var i = 0; i < page.cookies.length; i++) {
-//			console.log(page.cookies[i].name);
-//			console.log(page.cookies[i].value);
-//		}
-		
 		fs.write("sample.html", page.content, "w");
 	}
 ];
