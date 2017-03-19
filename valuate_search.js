@@ -2,7 +2,7 @@ var webPage = require('webpage');
 var fs = require('fs');
 var page = webPage.create();
 
-console.log("hello!");
+console.log("Start Valuate.com Unlimited Automated Search");
 
 // Log rrror messages
 function log_error(msg) {
@@ -13,11 +13,11 @@ function log_error(msg) {
 var isLoading = false;
 page.onLoadStarted = function() {
 	isLoading = true;
-	console.log('Loading started');
+	console.log('Loading ' + page.url + ' started');
 };
 page.onLoadFinished = function() {
 	isLoading = false;
-	console.log('Loading finished');
+	console.log('Loading ' + page.url + ' finished');
 };
 page.onConsoleMessage = function(msg) {
 	var noise = /(^::.*$)|(regHelp)/;
@@ -31,10 +31,7 @@ function clearCookies() {
 	phantom.clearCookies();
 }
 
-// config.json file parsing
 var config = JSON.parse(fs.read('config.json', 'utf8'));
-
-//console.log(config.username);
 
 // CORE EXECUTIONS:
 var steps = [
@@ -42,93 +39,129 @@ var steps = [
 		page.open("https://www.valuate.com/login/", function (status) {});
 	},
 	function login() {
-		var rect = page.evaluate(function eval_func1(config) {
-			
-			
+		page.evaluate(function eval_func1(config) {
 			var domain_form = $(document.forms[0]);
 			console.log(config);
 			domain_form.find('input[name="Login"]').val(config.username);
-			domain_form.find('input[name="Password"]').val(config.password);
-			
-			console.log(domain_form.find('input[name="Login"]').attr("value"));
-			console.log(domain_form.find('input[type="submit"]').val());
-			
+			domain_form.find('input[name="Password"]').val(config.password);		
+			// Click the button
 			domain_form.find('input[type="submit"]').click();
 			return domain_form.find('input[type="submit"]').get(0).getBoundingClientRect();
 		}, config);
-		//page.sendEvent('click', rect.left + rect.width / 2, rect.top + rect.height / 2);
-//		page.open("https://www.valuate.com/login/", function inspect(status) {
-//			if (status === 'success') {
-//				// Inject js code to remove single check limit
-//				var rect = page.evaluate(function eval_func1(config) {
-//					var domain_form = $(document.forms[0]);
-//					console.log(config);
-//					domain_form.find('input[name="Login"]').val(config.username);
-//					domain_form.find('input[name="Password"]').val(config.password);
-//					return domain_form.find('input[type="submit"]').get(0).getBoundingClientRect();
-//				});
-//				page.sendEvent('click', rect.left + rect.width / 2, rect.top + rect.height / 2);
-//			}
-//		}, config);
 		console.log("Step 1 finished");
 	},
-	function () {
-		//console.log(page.content);
-		console.log(page.url);
-		//page.open("https://www.valuate.com/", function (status) {});
-		//console.log("switching");
+	function wait_a_while() {
+		console.log("Loading for main page of " + page.url);
 	},
-	function () {
-			//console.log(page.content);
-			console.log(page.url);
-			//page.open("https://www.valuate.com/", function (status) {});
-			//console.log("switching");
-	},
-	function () {
-				//console.log(page.content);
-				console.log(page.url);
-				//page.open("https://www.valuate.com/", function (status) {});
-				//console.log("switching");
-	},
-	function enter_list() {
-		var url = "https://www.valuate.com/";
-		//console.log(page.content);
-		console.log(page.cookies);
-		
-		if (page.url !== url) {
-			console.log("redoing...");
-			wait_redo_step();
-		}
-		//
+	function bogus_check() {
 		if (page.injectJs('tools/inject_valuate.js')) {
 			var rect = page.evaluate(function eval_func2(config) {
 				var domain_form = $('#content1').find('form');
 				var domain_textarea = domain_form.find('textarea');
 				var domain_submit_button = domain_form.find('input[type="submit"]');
 				
-				var domain_list_string = "";
-				for (var i = 0; i < config.domains.length; i++) {
-					domain_list_string += (config.domains[i] + "\n");
-				}
-//				for (var domain_item of domains) {
-//					domain_list_string += (domain_item + "\n");
-//				}
+				var domain_list_string = "test.com";
 				
 				domain_textarea.val(domain_list_string);
 				
-				return domain_submit_button[0].getBoundingClientRect();
+				// The working click button
+				domain_submit_button.click();
 			}, config);
-			// click the submit button
-			page.sendEvent('click', rect.left + rect.width / 2, rect.top + rect.height / 2);
+		}
+	},
+	function return_to_original() {
+		page.evaluate(function eval_func3() {
+			$('a[href="#domains"]').click();
+		});
+		
+		var _date = new Date();
+		var _userOffset = _date.getTimezoneOffset()*60*1000; // user's offset time
+		var _eastOffset = 3*60*60*1000; // 6 for central time - use whatever you need
+		_date = new Date(_date.getTime() - _userOffset + _eastOffset); // redefine variable
+		var date_cookie_string = "val%2D" + _date.getMonth() + "%2D" + _date.getDay() + "%2D" + _date.getFullYear();
+		
+		if (page.injectJs('jquery.cookie.js')) {
+			for (var i = 0; i < page.cookies.length; i++) {
+				// find the correct cookie value
+				if (page.cookies[i].name.substring(0, 3) === "val") {
+					page.evaluate(function(cookie_name) {
+						$.cookie.raw = true;
+						var mod_name = cookie_name;
+						$.cookie(mod_name, -100000);
+					}, page.cookies[i].name);
+					console.log(">>> Search Limit Cracked <<<");
+				}
+				console.log(page.cookies[i].name);
+				console.log(page.cookies[i].value);
+			}
+		}
+		for (var i = 0; i < page.cookies.length; i++) {
+			console.log(page.cookies[i].name);
+			console.log(page.cookies[i].value);
 		}
 		
+	},
+	function wait_a_while() {
+		console.log("Loading for main page of " + page.url);
+	},
+	function enter_list() {
+		var url = "https://www.valuate.com/";
+		console.log(page.cookies);
+		
+		if (page.url !== url) {
+			console.log("redoing...");
+			wait_redo_step();
+		}
+		
+		page.evaluate(function eval_func4(config) {
+			var domain_form = $('#content1').find('form');
+			var domain_textarea = domain_form.find('textarea');
+			var domain_submit_button = domain_form.find('input[type="submit"]');
+						
+			var domain_list_string = "";
+			for (var i = 0; i < config.domains.length; i++) {
+				domain_list_string += (config.domains[i] + "\n");
+			}
+						
+			domain_textarea.val(domain_list_string);
+						
+						// The working click button
+			domain_submit_button.click();
+			return domain_submit_button[0].getBoundingClientRect();
+		}, config);
+		//
+//		if (page.injectJs('tools/inject_valuate.js')) {
+//			var rect = page.evaluate(function eval_func4(config) {
+//				var domain_form = $('#content1').find('form');
+//				var domain_textarea = domain_form.find('textarea');
+//				var domain_submit_button = domain_form.find('input[type="submit"]');
+//				
+//				var domain_list_string = "";
+//				for (var i = 0; i < config.domains.length; i++) {
+//					domain_list_string += (config.domains[i] + "\n");
+//				}
+//				
+//				domain_textarea.val(domain_list_string);
+//				
+//				// The working click button
+//				domain_submit_button.click();
+//				return domain_submit_button[0].getBoundingClientRect();
+//			}, config);
+//			// click the submit button, actually this one should not work
+//			page.sendEvent('click', rect.left + rect.width / 2, rect.top + rect.height / 2);
+//		}
+		
 		console.log("Step 2 finished");
+		
 	}, function result() {
+//		for (var i = 0; i < page.cookies.length; i++) {
+//			console.log(page.cookies[i].name);
+//			console.log(page.cookies[i].value);
+//		}
+		
 		fs.write("sample.html", page.content, "w");
-		//console.log(page.content);
 	}
 ];
-
 
 // step management
 var step_index = 0;
@@ -150,7 +183,7 @@ function handle_step() {
 		step_index++;
 	}
 	if (typeof steps[step_index] != "function") {
-		log_error("handle_step: current step not a function");
+		log_error("handle_step: current step not a function, program quits");
 	}
 }
 
@@ -170,16 +203,14 @@ function next_step() {
 	
 }
 
-
 // This one works for 
 function check_price() {
 	// set interval to 1s polling, may need to be longer.
 	clearCookies();
-	console.log("hello my friend");
-	step(5000);
+	step(3000);
 };
 
-console.log("script running");
+console.log("Script starts running without coding error");
 
 check_price();
 
