@@ -51,6 +51,7 @@ var steps = [
 	function wait_a_while() {
 		console.log("Loading for main page of " + page.url);
 	},
+	// Notice directly generating cookie seems not working, thus just let the site itself generate for us
 	function bogus_check() {
 		if (page.injectJs('tools/inject_valuate.js')) {
 			var rect = page.evaluate(function eval_func2(config) {
@@ -71,12 +72,6 @@ var steps = [
 		page.evaluate(function eval_func3() {
 			$('a[href="#domains"]').click();
 		});
-		
-//		var _date = new Date();
-//		var _userOffset = _date.getTimezoneOffset()*60*1000; // user's offset time
-//		var _eastOffset = 3*60*60*1000; // 6 for central time - use whatever you need
-//		_date = new Date(_date.getTime() - _userOffset + _eastOffset); // redefine variable
-//		var date_cookie_string = "val%2D" + _date.getMonth() + "%2D" + _date.getDay() + "%2D" + _date.getFullYear();
 		
 		if (page.injectJs('jquery.cookie.js')) {
 			for (var i = 0; i < page.cookies.length; i++) {
@@ -196,7 +191,6 @@ function handle_step() {
 	if (step_index >= steps.length) {
 		phantom.exit();
 	}
-	
 	if (isLoading === false && typeof steps[step_index] === "function") {
 		// Execute on step
 		steps[step_index]();

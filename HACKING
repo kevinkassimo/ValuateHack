@@ -1,0 +1,9 @@
+The methodology to hack the site is VERY simple, only need local changes.
+
+The KEY point is that Valuate.com, for some reason, stores daily domain search count LOCALLY, AKA, in cookies of the site! (Seriously, poor site maintainers should be fired...)
+
+Check the "cookies" of the size, and you will find something looks like "val%2D[A]%2D[B]%2D[C]", where A, B and C are all numbers (actually representing the date of the check). I suspected they have done this since I discovered that switching browser could reset the daily check count, even when the same user has logged in.
+
+The script simple starts with a headless browser with no cookies, and then by logging in and running single site search, fetching the generated cookie, set it to a HUGE (in abs terms) negative number (e.g. -100000, which, as I am amazed, the server ACCEPTED this number... No negative check?). Also, the single-time bulk search limit could be removed simply by injecting script and overwrite a single check function (as JS supports redefinition...)
+
+I have NO intention to offend the site maintainers, and I know that they indeed charge very few comparing to other domain appraisal site. Therefore, if contacted or confronted, I would immediately delete the repository with NO hesitation (this project happened to be my first practice of PhantomJS). HOWEVER, considering the poor design that could be manipulated by a newbie coder... Valuate.com, seriously...
